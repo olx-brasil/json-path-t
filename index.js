@@ -1,21 +1,30 @@
-const jp        = require('jsonpath');
+const jasonpath = require('jsonpath');
 const memoize   = require('memoizee');
+
+const jp = memoize((data, tmpl, list) => {
+    if(tmpl == "$") return list ? [data] : data;
+    return jasonpath.query(data, tmpl, list);
+});
 
 function type(obj) {
     return Array.isArray(obj) ? 'array' : typeof obj;
 }
 
 const render = memoize((tmpl, data, return_list = false) => {
+    //console.log(`render: ${tmpl}; ${type(tmpl)}`);
     let resp = null;
+    if(tmpl === null)       return null;
+    if(tmpl === undefined)  return undefined;
+    if(tmpl === NaN)        return NaN;
     switch (type(tmpl)) {
+        case 'string':
+            resp = render_string(tmpl, data, return_list);
+            break;
         case 'array':
             resp = render_array(tmpl, data, return_list);
             break;
         case 'object':
             resp = render_object(tmpl, data, return_list);
-            break;
-        case 'string':
-            resp = render_string(tmpl, data, return_list);
             break;
         default:
             resp = tmpl;
@@ -122,7 +131,7 @@ function render_object(tmpl, data, return_list = false) {
 function render_string(tmpl, data, return_list = false) {
     if(!has_path(tmpl)) return tmpl;
     if(tmpl.match(/^\s*\$/)) {
-        let ret = jp.query(data, tmpl, return_list ? undefined : 1);
+        let ret = jp(data, tmpl, return_list ? undefined : 1);
         if(!return_list) return ret[0];
         return ret;
     }
