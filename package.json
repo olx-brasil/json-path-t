@@ -1,0 +1,23 @@
+{
+  "name": "json-path-t",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha t"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@devscm.schibsted.com.br:tools/json-path-t.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^3.5.0",
+    "should": "^11.2.1"
+  },
+  "dependencies": {
+    "jsonpath": "^0.2.12",
+    "memoizee": "^0.4.5"
+  }
+}
