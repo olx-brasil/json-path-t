@@ -16,19 +16,19 @@ const render = memoize((tmpl, data, return_list = false) => {
     if(tmpl === null)       return null;
     if(tmpl === undefined)  return undefined;
     if(tmpl === NaN)        return NaN;
-    switch (type(tmpl)) {
-        case 'string':
-            resp = render_string(tmpl, data, return_list);
-            break;
-        case 'array':
-            resp = render_array(tmpl, data, return_list);
-            break;
-        case 'object':
-            resp = render_object(tmpl, data, return_list);
-            break;
-        default:
-            resp = tmpl;
-    }
+        switch (type(tmpl)) {
+            case 'string':
+                resp = render_string(tmpl, data, return_list);
+                break;
+            case 'array':
+                resp = render_array(tmpl, data, return_list);
+                break;
+            case 'object':
+                resp = render_object(tmpl, data, return_list);
+                break;
+            default:
+                resp = tmpl;
+        }
     //console.log(`render:   ${JSON.stringify(tmpl)} (${type(tmpl)}, ${JSON.stringify(data)}) => ${JSON.stringify(resp)}`);
     return resp;
 });
@@ -49,7 +49,7 @@ function obj_has_path(tmpl) {
 
 function str_has_path(tmpl) {
     //console.log(`str: ${tmpl}`);
-    return !!tmpl.match(/^\s*\$/);
+    return !!tmpl.match(/^\s*\$|\{\{\s*\$/);
 }
 
 const has_path = memoize(tmpl => {
@@ -128,12 +128,45 @@ function render_object(tmpl, data, return_list = false) {
     throw new Error("NYI");
 }
 
+function parse_tmpl(tmpl) {
+    return tmpl.split(/\{\{\s*(.*?)\s*\}\}/)
+}
+
+function render_parsed(parsed, data, return_list = false) {
+    if(!return_list) {
+        let ret = "";
+        for(let i = 0; i < parsed.length; i += 2) {
+            ret += parsed[i] || "";
+            if(i + 1 < parsed.length) {
+                ret += render_string(parsed[i + 1], data)
+            }
+        }
+        return ret;
+    } else {
+        let ret = [""];
+        for(let i = 0; i < parsed.length; i += 2) {
+            for(let j = 0; j < ret.length; j++) {
+                ret[j] += parsed[i];
+            }
+            if(i + 1 < parsed.length) {
+                ret = [].concat(...render_string(parsed[i + 1], data, true)
+                    .map(item => ret.map(r => r + item))
+                );
+            }
+        }
+        return ret;
+    }
+}
+
 function render_string(tmpl, data, return_list = false) {
     if(!has_path(tmpl)) return tmpl;
     if(tmpl.match(/^\s*\$/)) {
         let ret = jp(data, tmpl, return_list ? undefined : 1);
         if(!return_list) return ret[0];
         return ret;
+    } else {
+        let parsed = parse_tmpl(tmpl);
+        return render_parsed(parsed, data, return_list);
     }
     throw new Error("NYI");
 }

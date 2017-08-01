@@ -34,6 +34,22 @@ describe("basics", () => {
         (jpt("$.x", {}) === undefined).should.be.true;
     });
 
+    it("render string", () => {
+        jpt("The {{ $.letter }} is the letter",  {letter: "x"}).should.be.eql("The x is the letter");
+        jpt("->{{$.*}}-{{$.*}}<-",  {a:1, b:2, c:3}).should.be.eql("->1-1<-");
+        jpt("->{{$.*}}-{{$.*}}<-",  {a:1, b:2, c:3}, true).sort.should.be.eql([
+            "->1-1<-",
+            "->2-1<-",
+            "->3-1<-",
+            "->1-2<-",
+            "->2-2<-",
+            "->3-2<-",
+            "->1-3<-",
+            "->2-3<-",
+            "->3-3<-",
+        ].sort);
+    });
+
     it("array loop", () => {
         jpt(["$..x"],       [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([1, 2, 3]);
         jpt(["$..x", "$"],  [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([1, 2, 3]);
@@ -47,5 +63,7 @@ describe("basics", () => {
 
     it("hash loop", () => {
         jpt({"@": "$.*", "$.y": "$.x"}, [{x: 1, y: "a"}, {x: 2, y: "b"}, {x: 3, y: "c"}]).should.be.eql({a: 1, b: 2, c: 3});
+        jpt({"@": "$.*", "$.y": ["$.x"]}, [{x: 1, y: "a"}, {x: 2, y: "b"}, {x: 3, y: "c"}]).should.be.eql({a: [1], b: [2], c: [3]});
+        jpt({"@": "$.*", "$.y": {bla: "$.x"}}, [{x: 1, y: "a"}, {x: 2, y: "b"}, {x: 3, y: "c"}]).should.be.eql({a: {bla: 1}, b: {bla: 2}, c: {bla: 3}});
     });
 });
