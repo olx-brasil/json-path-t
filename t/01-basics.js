@@ -3,6 +3,8 @@ require("should");
 
 describe("basics", () => {
     it("scalar", () => {
+        true.should.be.false;
+
         (jpt(null,      {}) === null).should.be.true;
         (jpt(undefined, {}) === undefined).should.be.true;
 
