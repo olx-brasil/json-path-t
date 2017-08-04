@@ -2,8 +2,19 @@ const jasonpath = require('jsonpath');
 const memoize   = require('memoizee');
 
 const jp = memoize((data, tmpl, list) => {
-    if(tmpl == "$") return list ? [data] : data;
-    return jasonpath.query(data, tmpl, list);
+    let ret;
+    let [rtmpl, code] = tmpl.split(/\s*::\s*/);
+    if(rtmpl == "$") ret = [data];
+    else ret = jasonpath.query(data, rtmpl, list);
+    if(code != null) {
+        if(!Array.isArray(ret)) {
+            let $ = ret;
+            ret = eval(code);
+        } else {
+            ret = ret.map($ => eval(code));
+        }
+    }
+    return ret;
 });
 
 function type(obj) {

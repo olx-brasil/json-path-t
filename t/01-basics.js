@@ -66,4 +66,11 @@ describe("basics", () => {
         jpt({"@": "$.*", "$.y": ["$.x"]}, [{x: 1, y: "a"}, {x: 2, y: "b"}, {x: 3, y: "c"}]).should.be.eql({a: [1], b: [2], c: [3]});
         jpt({"@": "$.*", "$.y": {bla: "$.x"}}, [{x: 1, y: "a"}, {x: 2, y: "b"}, {x: 3, y: "c"}]).should.be.eql({a: {bla: 1}, b: {bla: 2}, c: {bla: 3}});
     });
+
+    it("modify response", () => {
+        jpt("$.answer :: $ - 29", {answer: 42}).should.be.eql(13);
+        jpt("$ :: Object.keys($)", {bla: 1, ble: 2}).should.be.eql(["bla", "ble"]);
+        jpt("$::$.length", [1, 2, 3, 4]).should.be.eql(4);
+        jpt("---{{ $.str :: $.toUpperCase() }}---", {str: "end"}).should.be.eql("---END---");
+    });
 });
