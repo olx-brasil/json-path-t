@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha t"
+    "test": "mocha t",
+    "preversion": "npm test"
   },
   "repository": {
     "type": "git",

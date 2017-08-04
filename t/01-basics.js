@@ -54,6 +54,7 @@ describe("basics", () => {
         jpt(["$..x"],       [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([1, 2, 3]);
         jpt(["$..x", "$"],  [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([1, 2, 3]);
         jpt(["$.*", "$.x"], [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([1, 2, 3]);
+        jpt(["$..x", "$.y"],  [{x: { y: 1 }}, {x: { y: 2 }}, {x: { y: 3 }}]).should.be.eql([1, 2, 3]);
 
         jpt(["$.*", ["$.x"]], [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([[1], [2], [3]]);
         jpt(["$.*", {value: "$.x"}], [{x: 1}, {x: 2}, {x: 3}]).should.be.eql([{value: 1}, {value: 2}, {value: 3}]);
