@@ -18,7 +18,9 @@
     "should": "^11.2.1"
   },
   "dependencies": {
+    "esprima": "^4.0.0",
     "jsonpath": "^0.2.12",
-    "memoizee": "^0.4.5"
+    "memoizee": "^0.4.5",
+    "static-eval": "^1.1.1"
   }
 }

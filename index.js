@@ -1,17 +1,27 @@
 const jasonpath = require('jsonpath');
 const memoize   = require('memoizee');
+const evaluate  = require('static-eval');
+const parse     = require('esprima').parse;
+
+const classes = {
+    Object,
+    Array,
+    Math
+};
 
 const jp = memoize((data, tmpl, list) => {
     let ret;
-    let [rtmpl, code] = tmpl.split(/\s*::\s*/);
+    let [rtmpl, code = "$"] = tmpl.split(/\s*=>\s*/);
+    let ast = parse(code).body[0].expression;
     if(rtmpl == "$") ret = [data];
     else ret = jasonpath.query(data, rtmpl, list);
     if(code != null) {
         if(!Array.isArray(ret)) {
-            let $ = ret;
-            ret = eval(code);
+            ret = evaluate(ast, Object.assign({}, classes, {
+                $: ret
+            }));
         } else {
-            ret = ret.map($ => eval(code));
+            ret = ret.map($ => evaluate(ast, Object.assign({}, classes, { $ })));
         }
     }
     return ret;

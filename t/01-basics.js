@@ -69,9 +69,9 @@ describe("basics", () => {
     });
 
     it("modify response", () => {
-        jpt("$.answer :: $ - 29", {answer: 42}).should.be.eql(13);
-        jpt("$ :: Object.keys($)", {bla: 1, ble: 2}).should.be.eql(["bla", "ble"]);
-        jpt("$::$.length", [1, 2, 3, 4]).should.be.eql(4);
-        jpt("---{{ $.str :: $.toUpperCase() }}---", {str: "end"}).should.be.eql("---END---");
+        jpt("$.answer => $ - 29", {answer: 42}).should.be.eql(13);
+        jpt("$ => Object.keys($)", {bla: 1, ble: 2}).should.be.eql(["bla", "ble"]);
+        jpt("$=>$.length", [1, 2, 3, 4]).should.be.eql(4);
+        jpt("---{{ $.str => $.toUpperCase() }}---", {str: "end"}).should.be.eql("---END---");
     });
 });
