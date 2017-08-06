@@ -88,6 +88,6 @@ describe("basics", () => {
         jpt("   \\$.bla", {bla: 42}).should.be.eql("   $.bla");
         jpt("\\ $.bla", {bla: 42}).should.be.eql("\\ $.bla");
         jpt("   \\ $.bla", {bla: 42}).should.be.eql("   \\ $.bla");
-		jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
+        jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
 	})
 });
