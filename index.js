@@ -9,20 +9,35 @@ const classes = {
     Math
 };
 
+const getPathObj = memoize((path) => {
+    let arr = path.slice(0);
+    arr.map((v, i, a) => a[i - a.length] = v);
+    return arr
+});
+
 const jp = memoize((data, tmpl, list) => {
     let ret;
     let [rtmpl, code = "$"] = tmpl.split(/\s*=>\s*/);
     let ast = parse(code).body[0].expression;
     if(!ast) return [];
     if(rtmpl == "$") ret = [data];
-    else ret = jasonpath.query(data, rtmpl, list);
+    else ret = jasonpath.nodes(data, rtmpl, list);
     if(code != null) {
         if(!Array.isArray(ret)) {
             ret = evaluate(ast, Object.assign({}, classes, {
                 $: ret
             }));
         } else {
-            ret = ret.map($ => evaluate(ast, Object.assign({}, classes, { $ })));
+            ret = ret.map(item => evaluate(ast, Object.assign({}, classes, {
+                $:     (item && type(item) == "object" && "value" in item
+                    ? item.value
+                    : item
+                ),
+                $keys: (item && type(item) == "object" && "value" in item
+                    ? getPathObj(item.path)
+                    : item
+                )
+            })));
         }
     }
     return ret;
