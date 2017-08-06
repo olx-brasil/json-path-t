@@ -76,13 +76,13 @@ describe("basics", () => {
     });
 
     it("static eval", () => {
-		let variable = 42;
-		(jpt("$ => variable = 13", {}) === undefined).should.be.true;
-		variable.should.be.eql(42);
-		(jpt("$ => process.exit(1)", {}) === undefined).should.be.true;
-		"didnt finish after exit".should.be.true;
-		(jpt("$ => throw new Error(\"error\")", {}) === undefined).should.be.true;
-		"didnt die with a throw".should.be.true;
+        let variable = 42;
+        (jpt("$ => variable = 13", {}) === undefined).should.be.true;
+        variable.should.be.eql(42);
+        (jpt("$ => process.exit(1)", {}) === undefined).should.be.true;
+        "didnt finish after exit".should.be.true;
+        (jpt("$ => throw new Error(\"error\")", {}) === undefined).should.be.true;
+        "didnt die with a throw".should.be.true;
     });
 
     it("scape", () => {
@@ -93,7 +93,7 @@ describe("basics", () => {
         jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
     })
 
-	it("keys", () => {
+    it("keys", () => {
         jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}).should.be.eql("a");
         jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}, true).should.be.eql(["a", "b", "c"])
     })
