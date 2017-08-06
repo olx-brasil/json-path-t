@@ -91,10 +91,10 @@ describe("basics", () => {
         jpt("\\ $.bla", {bla: 42}).should.be.eql("\\ $.bla");
         jpt("   \\ $.bla", {bla: 42}).should.be.eql("   \\ $.bla");
         jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
-	})
+    })
 
 	it("keys", () => {
-		jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}).should.be.eql("a");
-		jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}, true).should.be.eql(["a", "b", "c"])
-	})
+        jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}).should.be.eql("a");
+        jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}, true).should.be.eql(["a", "b", "c"])
+    })
 });
