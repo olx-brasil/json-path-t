@@ -13,6 +13,7 @@ const jp = memoize((data, tmpl, list) => {
     let ret;
     let [rtmpl, code = "$"] = tmpl.split(/\s*=>\s*/);
     let ast = parse(code).body[0].expression;
+    if(!ast) return [];
     if(rtmpl == "$") ret = [data];
     else ret = jasonpath.query(data, rtmpl, list);
     if(code != null) {

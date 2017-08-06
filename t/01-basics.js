@@ -80,7 +80,9 @@ describe("basics", () => {
 		(jpt("$ => variable = 13", {}) === undefined).should.be.true;
 		variable.should.be.eql(42);
 		(jpt("$ => process.exit(1)", {}) === undefined).should.be.true;
-		"didnt finish".should.be.true;
+		"didnt finish after exit".should.be.true;
+		(jpt("$ => throw new Error(\"error\")", {}) === undefined).should.be.true;
+		"didnt die with a throw".should.be.true;
     });
 
     it("scape", () => {
