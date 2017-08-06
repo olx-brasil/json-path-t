@@ -74,4 +74,20 @@ describe("basics", () => {
         jpt("$=>$.length", [1, 2, 3, 4]).should.be.eql(4);
         jpt("---{{ $.str => $.toUpperCase() }}---", {str: "end"}).should.be.eql("---END---");
     });
+
+    it("static eval", () => {
+		let variable = 42;
+		(jpt("$ => variable = 13", {}) === undefined).should.be.true;
+		variable.should.be.eql(42);
+		(jpt("$ => process.exit(1)", {}) === undefined).should.be.true;
+		"didnt finish".should.be.true;
+    });
+
+    it("scape", () => {
+        jpt("\\$.bla", {bla: 42}).should.be.eql("$.bla");
+        jpt("   \\$.bla", {bla: 42}).should.be.eql("   $.bla");
+        jpt("\\ $.bla", {bla: 42}).should.be.eql("\\ $.bla");
+        jpt("   \\ $.bla", {bla: 42}).should.be.eql("   \\ $.bla");
+		jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
+	})
 });

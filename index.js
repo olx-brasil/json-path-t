@@ -70,6 +70,8 @@ function obj_has_path(tmpl) {
 
 function str_has_path(tmpl) {
     //console.log(`str: ${tmpl}`);
+    let m = tmpl.match(/\{\{\s*(.*?)\s*\}\}/);
+    if(m) return str_has_path(m[1]);
     return !!tmpl.match(/^\s*\$|\{\{\s*\$/);
 }
 
@@ -150,7 +152,7 @@ function render_object(tmpl, data, return_list = false) {
 }
 
 function parse_tmpl(tmpl) {
-    return tmpl.split(/\{\{\s*(.*?)\s*\}\}/)
+    return tmpl.split(/\{\{\s*(\$.*?)\s*\}\}/).map(s => removeScape(s))
 }
 
 function render_parsed(parsed, data, return_list = false) {
@@ -179,8 +181,12 @@ function render_parsed(parsed, data, return_list = false) {
     }
 }
 
+function removeScape(tmpl) {
+    return tmpl.replace(/((?:^|\{\{)\s*)\\\$/, "$1$")
+}
+
 function render_string(tmpl, data, return_list = false) {
-    if(!has_path(tmpl)) return tmpl;
+    if(!has_path(tmpl)) return removeScape(tmpl);
     if(tmpl.match(/^\s*\$/)) {
         let ret = jp(data, tmpl, return_list ? undefined : 1);
         if(!return_list) return ret[0];
