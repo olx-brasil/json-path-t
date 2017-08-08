@@ -7,6 +7,9 @@
     "test": "mocha t",
     "preversion": "npm test"
   },
+  "bin": {
+      "jpt": "bin/jpt.js"
+  },
   "repository": {
     "type": "git",
     "url": "git@devscm.schibsted.com.br:tools/json-path-t.git"

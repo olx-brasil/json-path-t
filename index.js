@@ -21,7 +21,13 @@ const jp = memoize((data, tmpl, list) => {
     let ast = parse(code).body[0].expression;
     if(!ast) return [];
     if(rtmpl == "$") ret = [data];
-    else ret = jasonpath.nodes(data, rtmpl, list);
+    else {
+        try {
+            ret = jasonpath.nodes(data, rtmpl, list);
+        } catch(err) {
+            throw new Error(`Error trying to render ${JSON.stringify(rtmpl)} using ${JSON.stringify(data)}: ${err.stack}`);
+        }
+    }
     if(code != null) {
         if(!Array.isArray(ret)) {
             ret = evaluate(ast, Object.assign({}, classes, {
