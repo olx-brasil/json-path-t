@@ -45,5 +45,5 @@ describe("samples", () => {
                 }
             })
         });
-    })
+    }).timeout(0)
 });
