@@ -91,10 +91,25 @@ describe("basics", () => {
         jpt("\\ $.bla", {bla: 42}).should.be.eql("\\ $.bla");
         jpt("   \\ $.bla", {bla: 42}).should.be.eql("   \\ $.bla");
         jpt("bla {{ \\$.bla }}", {bla: 42}).should.be.eql("bla {{ $.bla }}")
-    })
+    });
 
     it("keys", () => {
         jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}).should.be.eql("a");
         jpt("$.* => $keys[-1]", {a: 1, b: 2, c: 3}, true).should.be.eql(["a", "b", "c"])
+    });
+
+    it("$$", () => {
+        jpt("$$", 42).should.be.eql(42);
+        jpt("$$", {a: 1}).should.be.eql({a: 1});
+        jpt(["$.*", "$$"], [1, 2, 3]).should.be.eql([[1,2,3], [1,2,3], [1,2,3]]);
+        jpt(["$.*", "$$[0]"], [1, 2, 3]).should.be.eql([1, 1, 1]);
+        jpt(["$.*", {"$": {"$$[1]": "$$[2]"}}], [1, 2, 3]).should.be.eql([{1: {2: 3}}, {2: {2: 3}}, {3: {2: 3}}]);
+        jpt(["$.a.x.*", {"$": "$$.b"}], {a: {x: [1, 2, 3]}, b: 42}).should.be.eql([{1: 42}, {2: 42}, {3: 42}]);
+        jpt({"@": "$.*", "$.x": " $$[0].x"}, [{x: 1}, {x: 2}, {x: 3}]).should.be.eql({1: 1, 2: 1, 3: 1});
+    });
+
+    it("$$ modify response", () => {
+        jpt("$.answer => $$.answer - 29", {answer: 42}).should.be.eql(13);
+        jpt("$ => Object.keys($$)", {bla: 1, ble: 2}).should.be.eql(["bla", "ble"]);
     })
 });
